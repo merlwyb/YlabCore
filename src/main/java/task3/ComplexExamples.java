@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -118,7 +119,8 @@ public class ComplexExamples {
                 Value:1
          */
 
-
+        printSortedData();
+        System.out.println();
 
         /*
         Task2
@@ -126,7 +128,8 @@ public class ComplexExamples {
             [3, 4, 2, 7], 10 -> [3, 7] - вывести пару менно в скобках, которые дают сумму - 10
          */
 
-
+        printSumNumbers(new int[]{3, 4, 2, 7}, 10);
+        System.out.println();
 
         /*
         Task3
@@ -138,5 +141,48 @@ public class ComplexExamples {
                     fuzzySearch("cwheeel", "cartwheel"); // false
                     fuzzySearch("lw", "cartwheel"); // false
          */
+
+        fuzzySearch("car", "ca6$$#_rtwheel"); // true
+        fuzzySearch("cwhl", "cartwheel"); // true
+        fuzzySearch("cwhee", "cartwheel"); // true
+        fuzzySearch("cartwheel", "cartwheel"); // true
+        fuzzySearch("cwheeel", "cartwheel"); // false
+        fuzzySearch("lw", "cartwheel"); // false
+    }
+
+    static void printSortedData() {
+        Map<String, Long> sortedData = Arrays.stream(RAW_DATA)
+                .distinct()
+                .sorted(Comparator.comparingInt(o -> o.id))
+                .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
+
+        sortedData.forEach((key, value) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Value:" + value);
+        });
+    }
+
+    static void printSumNumbers(int[] intArray, int sum) {
+        int[] result = new int[0];
+
+        for (int i = 0; i < intArray.length; i++) {
+            boolean quitLoop = false;
+            for (int j = i + 1; j < intArray.length; j++) {
+                if (intArray[i] + intArray[j] == sum) {
+                    result = new int[]{intArray[i], intArray[j]};
+                    quitLoop = true;
+                    break;
+                }
+            }
+            if (quitLoop)
+                break;
+        }
+
+        System.out.println(Arrays.toString(result));
+    }
+
+    static void fuzzySearch(String toFind, String toSearch) {
+        String fuzzyRegex = "(" + toFind.replaceAll("", ".*").substring(2) + ")";
+        System.out.println(toSearch.matches(fuzzyRegex));
     }
 }
