@@ -119,7 +119,11 @@ public class ComplexExamples {
                 Value:1
          */
 
-        printSortedData();
+        Map<String, Long> sortedData = sortDataAndGetMap(RAW_DATA);
+        sortedData.forEach((key, value) -> {
+            System.out.println("Key: " + key);
+            System.out.println("Value:" + value);
+        });
         System.out.println();
 
         /*
@@ -128,7 +132,7 @@ public class ComplexExamples {
             [3, 4, 2, 7], 10 -> [3, 7] - вывести пару менно в скобках, которые дают сумму - 10
          */
 
-        printSumNumbers(new int[]{3, 4, 2, 7}, 10);
+        System.out.println(Arrays.toString(getSumNumbers(new int[]{3, 4, 2, 7}, 10)));
         System.out.println();
 
         /*
@@ -142,28 +146,26 @@ public class ComplexExamples {
                     fuzzySearch("lw", "cartwheel"); // false
          */
 
-        fuzzySearch("car", "ca6$$#_rtwheel"); // true
-        fuzzySearch("cwhl", "cartwheel"); // true
-        fuzzySearch("cwhee", "cartwheel"); // true
-        fuzzySearch("cartwheel", "cartwheel"); // true
-        fuzzySearch("cwheeel", "cartwheel"); // false
-        fuzzySearch("lw", "cartwheel"); // false
+        System.out.println(fuzzySearch("car", "ca6$$#_rtwheel")); // true
+        System.out.println(fuzzySearch("cwhl", "cartwheel")); // true
+        System.out.println(fuzzySearch("cwhee", "cartwheel")); // true
+        System.out.println(fuzzySearch("cartwheel", "cartwheel")); // true
+        System.out.println(fuzzySearch("cwheeel", "cartwheel")); // false
+        System.out.println(fuzzySearch("lw", "cartwheel")); // false
     }
 
-    static void printSortedData() {
-        Map<String, Long> sortedData = Arrays.stream(RAW_DATA)
+    static Map<String, Long> sortDataAndGetMap(Person[] data) {
+        return Arrays.stream(data)
+                .filter(Objects::nonNull)
                 .distinct()
                 .sorted(Comparator.comparingInt(o -> o.id))
                 .collect(Collectors.groupingBy(Person::getName, Collectors.counting()));
-
-        sortedData.forEach((key, value) -> {
-            System.out.println("Key: " + key);
-            System.out.println("Value:" + value);
-        });
     }
 
-    static void printSumNumbers(int[] intArray, int sum) {
+    static int[] getSumNumbers(int[] intArray, int sum) {
         int[] result = new int[0];
+        if (intArray == null)
+            return result;
 
         for (int i = 0; i < intArray.length; i++) {
             boolean quitLoop = false;
@@ -178,11 +180,13 @@ public class ComplexExamples {
                 break;
         }
 
-        System.out.println(Arrays.toString(result));
+        return result;
     }
 
-    static void fuzzySearch(String toFind, String toSearch) {
-        String fuzzyRegex = "(" + toFind.replaceAll("", ".*").substring(2) + ")";
-        System.out.println(toSearch.matches(fuzzyRegex));
+    static boolean fuzzySearch(String toFind, String toSearch) {
+        if (toFind == null || toSearch == null)
+            return false;
+        String fuzzyRegex = "(" + toFind.replaceAll("", ".*") + ")";
+        return toSearch.matches(fuzzyRegex);
     }
 }
